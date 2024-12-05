@@ -18,86 +18,57 @@
 
 ---
 
-## Installation
+## Requirements
 
-### Prerequisites
-- Python 3.11 or higher
+- Python 3.12 or higher
 - FastAPI framework
 
-## Project Setup
+## Installation
+
+Create and activate a virtual environment and then install FastAPI & fastapi_ndjson_logger:
 
 ```bash
-fastapi-logger/
-├── app/
-│   ├── __init__.py
-│   ├── main.py                    # FastAPI entry point
-│   ├── middleware/
-│   │   ├── __init__.py
-│   │   ├── fastapi_logging_middleware.py  # Middleware implementation
-├── tests/
-│   ├── __init__.py
-│   ├── test_logging_middleware.py # Unit tests for logging middleware
-├── requirements.txt               # Required Python packages
-├── README.md                      # Project documentation
-├── LICENSE                        # License file
+pip install "fastapi[standard]" fastapi_ndjson_logger
 ```
 
-Here's how to set up the project:
+## Example 
 
-1. Clone the repository:
-
-```bash
-git clone https://github.com/yourusername/fastapi-logger.git
-```
-
-2. Set up the virtual environment:
-
-```bash
-cd fastapi-logger
-python -m venv .venv
-```
-
-3. Activate the virtual environment:
-
-```bash
-source .venv/bin/activate
-```
-
-4. Install the project dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-## Usage
-
-To use FastAPI-Logger in your FastAPI app & configure the parameters,
+Create a new FastAPI app and add the middleware to it:
 
 ```python
-from fastapi import FastAPI
-from .middleware.fastapi_logging_middleware import RequestResponseLoggingMiddleware
 import os
+
+from fastapi import FastAPI
+from fastapi_ndjson_logger import RequestResponseLogging
 
 # Create logs directory if it doesn't exist
 os.makedirs("logs/request_response_logs", exist_ok=True)
 
-
 app = FastAPI()
 app.add_middleware(
-    RequestResponseLoggingMiddleware,
-    log_dir=os.path.join("logs", "request_response_logs"),  # Directory for log files
+    RequestResponseLogging,
+    og_dir=os.path.join("logs", "request_response_logs"),  # Directory for log files
     max_mbytes=8,  # 8 MB max file size
     backup_count=3,  # Keep up to 3 rotated files
 )
 
-
+# Add routes to the app
 @app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
+async def read_root():
+    return {"Hello": "World"}
 ```
 
-Then run the app using `uvicorn app.main:app --reload`
+## Run it
+
+```bash
+uvicorn app.main:app --reload
+```
+
+## Check the logs
+
+```bash
+cat logs/request_response_logs/app_log.ndjson
+```
 
 ## Configuration Parameters
 

@@ -7,7 +7,7 @@ from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
 
 
-class RequestResponseLoggingMiddleware(BaseHTTPMiddleware):
+class RequestResponseLogging(BaseHTTPMiddleware):
     def __init__(
         self,
         app,

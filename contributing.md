@@ -40,3 +40,96 @@ If you have an idea for a new feature or an improvement, create a feature reques
     black .
     ```
 
+## Project Setup
+
+```bash
+.
+├── CODE_OF_CONDUCT.md
+├── LICENSE
+├── MANIFEST.in
+├── README.md
+├── app
+│   ├── __init__.py
+│   ├── fastapi_ndjson_logger
+│   │   ├── __init__.py
+│   │   └── fastapi_ndjson_logger.py
+│   ├── main.py
+│   └── tests
+│       ├── __init__.py
+│       └── test_logging_middleware.py
+├── contributing.md
+├── logs
+│   └── request_response_logs
+│       └── app_log.ndjson
+└── requirements.txt
+```
+
+## Setting up the project for development
+
+Here's how to set up the project:
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/fastapi-logger.git
+```
+
+2. Set up the virtual environment:
+
+```bash
+cd fastapi-logger
+python -m venv .venv
+```
+
+3. Activate the virtual environment:
+
+```bash
+source .venv/bin/activate
+```
+
+4. Install the project dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+## Usage
+
+To use FastAPI-Logger in your FastAPI app & configure the parameters,
+
+```python
+from fastapi import FastAPI
+from .fastapi_ndjson_logger.fastapi_ndjson_logger import (
+    RequestResponseLogging,
+)
+import os
+
+# Create logs directory if it doesn't exist
+os.makedirs("logs/request_response_logs", exist_ok=True)
+
+
+app = FastAPI()
+app.add_middleware(
+    RequestResponseLogging,
+    log_dir=os.path.join("logs", "request_response_logs"),  # Directory for log files
+    max_mbytes=8,  # 8 MB max file size
+    backup_count=3,  # Keep up to 3 rotated files
+)
+
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
+
+
+```
+
+Then run the app using `uvicorn app.main:app --reload`
+
+## Configuration Parameters
+
+| Parameter      | Description                                    | Default Value         |
+|----------------|------------------------------------------------|-----------------------|
+| `log_dir`      | Directory to store log files                  | `app_logs`            |
+| `max_mbytes`    | Maximum size of a log file in Mega bytes before rotation | `8` (8 MB) |
+| `backup_count` | Number of rotated files to retain             | `5`                   |

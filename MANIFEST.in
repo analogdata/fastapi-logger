@@ -1,0 +1,14 @@
+# Include important non-code files
+include README.md
+include LICENSE
+include CODE_OF_CONDUCT.md
+include contributing.md
+include requirements.txt
+
+# Include all files in the fastapi_ndjson_logger package
+recursive-include app/fastapi_ndjson_logger *
+
+# Exclude test files and logs from the distribution
+exclude app/main.py
+exclude app/tests/*
+exclude logs/*
